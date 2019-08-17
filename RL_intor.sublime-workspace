@@ -1,0 +1,428 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"N",
+				"NotImplementedError\tclass"
+			],
+			[
+				"sh",
+				"short_side\tstatement"
+			],
+			[
+				"frm",
+				"frm_n_v\tstatement"
+			],
+			[
+				"v_meta",
+				"v_meta_str\tparam"
+			],
+			[
+				"v",
+				"v_batch_size\tstatement"
+			],
+			[
+				"frm_",
+				"frm_name\tstatement"
+			],
+			[
+				"out",
+				"output\tstatement"
+			],
+			[
+				"k",
+				"k_idx\tstatement"
+			],
+			[
+				"ker",
+				"kernel_avg\tstatement"
+			],
+			[
+				"con",
+				"con_sub_rand"
+			],
+			[
+				"img",
+				"img_readers\tmodule"
+			],
+			[
+				"t_",
+				"t_sample_method"
+			],
+			[
+				"even",
+				"even_seg_rand_sample"
+			],
+			[
+				"hard",
+				"hardtanh\tfunction"
+			],
+			[
+				"har",
+				"hardtanh\tfunction"
+			],
+			[
+				"for",
+				"format\tfunction"
+			],
+			[
+				"rand",
+				"randn"
+			],
+			[
+				"tp",
+				"tp_stride\tparam"
+			],
+			[
+				"Spl",
+				"Split3DTo5D\tfunction"
+			],
+			[
+				"Mer",
+				"Merge5DTo3D\tfunction"
+			],
+			[
+				"make",
+				"makedirs\tfunction"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "RL_intor.sublime-project",
+			"settings":
+			{
+				"buffer_size": 386,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "chapter03/grid_world.py",
+			"settings":
+			{
+				"buffer_size": 3514,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "chapter03/my_grid_world.py",
+			"settings":
+			{
+				"buffer_size": 126,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"Anaconda: Disable linting on this file"
+			],
+			[
+				"package control",
+				"Package Control: Enable Package"
+			],
+			[
+				"pCKAGE CONTROL: IN",
+				"Package Control: Install Package"
+			],
+			[
+				"package control: In",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 211.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib2,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); os.makedirs( ipp ) if not os.path.exists(ipp) else None; urllib2.install_opener( urllib2.build_opener( urllib2.ProxyHandler()) ); by = urllib2.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); open( os.path.join( ipp, pf), 'wb' ).write(by) if dh == h else None; print('Error validating download (got %s instead of %s), please try manual install' % (dh, h) if dh != h else 'Please restart Sublime Text to finish installation')",
+			"install",
+			"import urllib.request,os,hashlib; h = '6f4c264a24d933ce70df5dedcf1dcaee' + 'ebe013ee18cced0ef93d5f746d80ef60'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/x_chang/main_space/Codes/reinforcement-learning-an-introduction",
+		"/home/x_chang/main_space/Codes/reinforcement-learning-an-introduction/chapter03"
+	],
+	"file_history":
+	[
+		"/home/x_chang/main_space/py3_venvs/RL_Intro/lib/python3.6/site-packages/matplotlib/__init__.py",
+		"/home/x_chang/main_space/Codes/reinforcement-learning-an-introduction/RL_intor.sublime-project",
+		"/home/x_chang/main_space/Codes/reinforcement-learning-an-introduction/chapter04/grid_world.py",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/Scripts/Ori_Pathes/DIGIT_LEL_GRAY_SRC_TAR_CSLayer_Unsup_DFreg_FT.sh",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/DIGIT_LEL_GRAY_SRC_TAR_CSLayer_Unsup_DFreg_FT.py",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/DIGIT_LEL_GRAY_SRC_TAR_CSLayer_Unsup_DFreg_Train.py",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/Scripts/Ori_Pathes/DIGIT_LEL_GRAY_SRC_TAR_CSLayer_Unsup_DFreg_Train.sh",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/Scripts/Ori_Pathes/DIGIT_LEL_GRAY_SRC_CSLayer_Unsup_FT.sh",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/train_3D_model.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/DataLoad/Volume_Data_Factory.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/DataLoad/utils/transforms.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/DataLoad/Loaders/Kinetics_Load.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/DataLoad/Datasets/Kinetics.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/DataLoad/utils/img_readers.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/train_kinetics_3D.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/NetBlocks/LTP_ops.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/NetBlocks/Tensor_ops.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/PT_3DCNNs/NetBlocks/GTK_ops.py",
+		"/home/x_chang/main_space/Codes/Action_Activity/Non-local_pytorch/lib/non_local_gaussian.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/Scripts/train_kinetics_3D.sh",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/NetBlocks/resnet_2D_LTP.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/NetBlocks/LTP_ops.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/NetBlocks/resnet_2D_TAPs.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/DataLoad/utils/img_readers.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/DataLoad/Datasets/Kinetics.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/DataLoad/Loaders/Kinetics_Load.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/DataLoad/Volume_Data_Factory.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/train_kinetics_3D.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/NetBlocks/resnet_2D_LP.py",
+		"/mnt/d/Linux_Data/Codes/Action_Activity/PT_3DCNNs/PT_3DCNNs.sublime-project",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/DIGIT_LEL_GRAY_TAR_Entropy_FT.py",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/Pytorch_Re-ID_QMUL.sublime-project",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/DIGIT_AE_FT_AE_Cluster_Tri.py",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/NetBlocks/Deep_Cluster_Funs.py",
+		"/mnt/d/Linux_Data/Codes/Pytorch_Re-ID_QMUL/DIGIT_LEL_GRAY_SRC_CSLayer_Unsup_FT.py",
+		"/mnt/d/Linux_Data/test_codes/subl_testing.sublime-project",
+		"/home/x_chang/.config/sublime-text-3/Packages/User/Anaconda.sublime-settings",
+		"/home/x_chang/.config/sublime-text-3/Packages/User/Package Control.sublime-settings"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"step"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "RL_intor.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 386,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								379,
+								379
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "chapter03/grid_world.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3514,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								573,
+								573
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "chapter03/my_grid_world.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 126,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								126,
+								126
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "RL_intor.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 530.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 410.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 282.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
