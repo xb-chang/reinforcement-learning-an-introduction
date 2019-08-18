@@ -112,16 +112,50 @@ def sv_3_2():
             plt.close()
             break
 
-        # # check convergence after each state sweep
-        # # convergence tolerance
-        # print(pre_state_values - state_values)
-        # pdb.set_trace()
-        # if np.sum(np.abs(pre_state_values - state_values)) < 1e-4:
-        #     draw_image(np.round(state_values, decimals=2))
-        #     plt.savefig('./images/mine/figure_3_2.png')
-        #     plt.close()
-        #     break
+
+def opt_sv_3_5():
+    # Eq (3.19) / (3.20) provides the iterative method to compute optimal state/action-values directly (sweep through + max operations)
+    # Indirectly have the optimal policy?
+    # Different from the Generalised Policy Iterations (GPI) in Chapter 4, back and forth Prediction <-> Improvement.
+
+    # Very similar to 3_2
+    opt_state_values = np.zeros((WORLD_SIZE, WORLD_SIZE), dtype=float)
+    iter = 0
+
+    while True:
+        max_diff = 0
+        iter += 1
+
+        for i in range(WORLD_SIZE):
+            for j in range(WORLD_SIZE):
+                state = [i, j]
+                pre_opt_sv = opt_state_values[i, j]
+                sv_list = []
+
+                for action in range(ACTION_NUM):
+                    reward, next_state = step(state, action)
+                    next_i, next_j = next_state
+
+                    # Eq (3.19)
+                    sv_list.append(reward + DISCOUNT * opt_state_values[next_i, next_j])
+                # max_a rather than expectation
+                assert len(sv_list) == ACTION_NUM
+                opt_state_values[i, j] = np.max(sv_list)
+
+                sv_diff = abs(pre_opt_sv - opt_state_values[i, j])
+                if sv_diff > max_diff:
+                    max_diff = sv_diff
+            
+        if max_diff < 1e-4:
+            print(iter)
+            print(max_diff)
+            draw_image(np.round(opt_state_values, decimals=2))
+            plt.savefig('./images/mine/figure_3_5.png')
+            plt.close()
+            break
+
+
 
 if __name__ == '__main__':
     sv_3_2()
-    # figure_3_5()
+    opt_sv_3_5()
