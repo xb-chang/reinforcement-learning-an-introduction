@@ -99,7 +99,7 @@ def figure_4_1():
     print('In-place: {} iterations'.format(asycn_iteration))
     print('Synchronous: {} iterations'.format(sync_iteration))
 
-    plt.savefig('../images/figure_4_1.png')
+    plt.savefig('./images/figure_4_1.png')
     plt.close()
 
 
