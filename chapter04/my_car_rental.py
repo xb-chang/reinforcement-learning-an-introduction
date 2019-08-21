@@ -114,47 +114,41 @@ def Expected_Return_with_Mem(state, action, state_value):
     '''
     Policy Iteration is used. (Memory based) (less computing required)
     reward = Income - car movement fee
-    States are the #cars of two locates at the beginning of each day
+    States are the #cars of two locates at the end (not begining!!!) of each day 
     action: #cars move between them. L1 -> L2: +; [-5, 5]
     return:
         updated V(state)
     '''
 
-    cars_L1 = state[0]
+    assert -5 <= action <= 5
+    # move cars first, then one day starts
+    # new states after processing and action
+    # L1 -> L2: +
+
+    cars_L1 = min(state[0] - action, L1_CAR_MAX)
     if cars_L1 in L1_Dynamics:
         L1_temp_states = L1_Dynamics[cars_L1]
     else:
         L1_temp_states = compute_dynamics(cars_L1, L1_OUT_LAMB, L1_IN_LAMB, L1_CAR_MAX)
         L1_Dynamics[cars_L1] = L1_temp_states
 
-    cars_L2 = state[1]
+    cars_L2 = min(state[1] + action, L2_CAR_MAX)
     if cars_L2 in L2_Dynamics:
         L2_temp_states = L2_Dynamics[cars_L2]
     else:
         L2_temp_states = compute_dynamics(cars_L2, L2_OUT_LAMB, L2_IN_LAMB, L2_CAR_MAX)
         L2_Dynamics[cars_L2] = L2_temp_states
-
-    assert -5 <= action <= 5
+    
+    assert L1_CAR_MAX >= cars_L1 >= 0 or L2_CAR_MAX >= cars_L2 >= 0
 
     value = 0.0
 
     for L1_out, L1_out_prob, L1_return_prob, remain_cars_L1 in L1_temp_states:
         for L2_out, L2_out_prob, L2_return_prob, remain_cars_L2 in L2_temp_states:
             Income = (L1_out + L2_out) * 10.0
-            # new states after processing and action
-            # L1 -> L2: +
-            if action >= remain_cars_L1:
-                reward = Income - CAR_MOVE_FEE * remain_cars_L1
-                new_cars_L1 = 0
-                new_cars_L2 = min(remain_cars_L2 + remain_cars_L1, 20)
-            elif action < 0 and abs(action) >= remain_cars_L2:
-                reward = Income - CAR_MOVE_FEE * remain_cars_L2
-                new_cars_L1 = min(remain_cars_L1 + remain_cars_L2, 20)
-                new_cars_L2 = 0
-            else:
-                reward = Income - CAR_MOVE_FEE * abs(action)
-                new_cars_L1 = min(remain_cars_L1 - action, 20)
-                new_cars_L2 = min(remain_cars_L2 + action, 20)
+            reward = Income - CAR_MOVE_FEE * abs(action)
+            new_cars_L1 = remain_cars_L1
+            new_cars_L2 = remain_cars_L2
             
             assert 0 <= new_cars_L1 <= 20 and  0 <= new_cars_L2 <= 20
 
@@ -167,16 +161,17 @@ def Expected_Return(state, action, state_value):
     '''
     Policy Iteration is used.
     reward = Income - car movement fee
-    States are the #cars of two locates at the beginning of each day
+    States are the #cars of two locates at the end (not begining!!!) of each day
     action: #cars move between them. L1 -> L2: +; [-5, 5]
     return:
         updated V(state)
     '''
 
-    cars_L1 = state[0]
-    cars_L2 = state[1]
-
     assert -5 <= action <= 5
+
+    cars_L1 = min(state[0] - action, L1_CAR_MAX)
+    cars_L2 = min(state[1] + action, L2_CAR_MAX)
+    assert L1_CAR_MAX >= cars_L1 >= 0 or L2_CAR_MAX >= cars_L2 >= 0
 
     value = 0.0
 
@@ -196,20 +191,9 @@ def Expected_Return(state, action, state_value):
                     L2_return_prob, remain_cars_L2 = return_car(L2_returns, rent_remain_cars_L2, L2_IN_LAMB, L2_CAR_MAX)
 
                     Income = (L1_out + L2_out) * 10.0
-                    # new states after processing and action
-                    # L1 -> L2: +
-                    if action >= remain_cars_L1:
-                        reward = Income - CAR_MOVE_FEE * remain_cars_L1
-                        new_cars_L1 = 0
-                        new_cars_L2 = min(remain_cars_L2 + remain_cars_L1, 20)
-                    elif action < 0 and abs(action) >= remain_cars_L2:
-                        reward = Income - CAR_MOVE_FEE * remain_cars_L2
-                        new_cars_L1 = min(remain_cars_L1 + remain_cars_L2, 20)
-                        new_cars_L2 = 0
-                    else:
-                        reward = Income - CAR_MOVE_FEE * abs(action)
-                        new_cars_L1 = min(remain_cars_L1 - action, 20)
-                        new_cars_L2 = min(remain_cars_L2 + action, 20)
+                    reward = Income - CAR_MOVE_FEE * abs(action)
+                    new_cars_L1 = remain_cars_L1
+                    new_cars_L2 = remain_cars_L2
                     
                     assert 0 <= new_cars_L1 <= 20 and  0 <= new_cars_L2 <= 20
 
@@ -218,6 +202,73 @@ def Expected_Return(state, action, state_value):
     return value
 
 # Value iterations as well?
+
+def figure_4_2_val_iter():
+    # value iteration for final policy and values in one sweep
+    # determinstic policies
+    value = np.zeros((L1_CAR_MAX+1, L2_CAR_MAX+1))
+    policy = np.zeros(value.shape, dtype=np.int)
+
+    iterations = 0
+    _, axes = plt.subplots(2, 1, figsize=(40, 20)) # a fig of policy and a fig of optimal values
+    plt.subplots_adjust(wspace=0.1, hspace=0.2)
+    axes = axes.flatten()
+
+    while True:
+        # value iteration, similar to policy improvement
+        max_diff = 0
+        for L1_cars in range(L1_CAR_MAX+1):
+            for L2_cars in range(L2_CAR_MAX+1):
+                old_value = value[L1_cars, L2_cars]
+                action_values = []
+                for action in ACTION_LIST:
+                    if 0 <= action <= L1_cars or (-1*L2_cars) <= action <= 0: 
+                        # action_values.append(Expected_Return([L1_cars, L2_cars], action, value))
+                        action_values.append(Expected_Return_with_Mem([L1_cars, L2_cars], action, value))
+                    else:
+                        # not available actions
+                        action_values.append(-np.inf)
+                new_value = np.max(action_values)
+                diff = abs(old_value - new_value)
+                value[L1_cars, L2_cars] = new_value
+                if max_diff < diff:
+                    max_diff = diff
+        iterations += 1
+        print('Iter {}: max diff: {:.6f}'.format(iterations, max_diff))
+        if max_diff < 1e-4:
+            break
+    
+    # draw optimal values
+    fig = sns.heatmap(np.flipud(value), cmap="YlGnBu", ax=axes[-1])
+    fig.set_ylabel('# cars at first location', fontsize=30)
+    fig.set_yticks(list(reversed(range(MAX_CARS + 1))))
+    fig.set_xlabel('# cars at second location', fontsize=30)
+    fig.set_title('optimal value', fontsize=30)
+
+    # final optimal policy
+    for L1_cars in range(L1_CAR_MAX+1):
+        for L2_cars in range(L2_CAR_MAX+1):
+            action_values = []
+            for action in ACTION_LIST:
+                if 0 <= action <= L1_cars or (-1*L2_cars) <= action <= 0: 
+                    # action_values.append(Expected_Return([L1_cars, L2_cars], action, value))
+                    action_values.append(Expected_Return_with_Mem([L1_cars, L2_cars], action, value))
+                else:
+                    # not available actions
+                    action_values.append(-np.inf)
+            new_action = ACTION_LIST[np.argmax(action_values)]
+            policy[L1_cars, L2_cars] = new_action
+
+    # draw optimal policy
+    fig = sns.heatmap(np.flipud(policy), cmap="YlGnBu", ax=axes[0])
+    fig.set_ylabel('# cars at first location', fontsize=30)
+    fig.set_yticks(list(reversed(range(MAX_CARS + 1))))
+    fig.set_xlabel('# cars at second location', fontsize=30)
+    fig.set_title('optimal policy'.format(0), fontsize=30)
+
+    plt.savefig('./images/mine/figure_4_2_val_iter.png')
+    plt.close()
+
 
 def figure_4_2():
     # determinstic policies
@@ -250,6 +301,7 @@ def figure_4_2():
             eval_iter += 1
             print('{} max value change {}'.format(eval_iter, max_value_change))
             if max_value_change < 1e-4:
+            # if max_value_change < 1e-2:
                 break
 
         # policy improvement
@@ -259,8 +311,12 @@ def figure_4_2():
                 old_action = policy[L1_cars, L2_cars]
                 action_values = []
                 for action in ACTION_LIST:
-                    # action_values.append(Expected_Return([L1_cars, L2_cars], action, value))
-                    action_values.append(Expected_Return_with_Mem([L1_cars, L2_cars], action, value))
+                    if 0 <= action <= L1_cars or (-1*L2_cars) <= action <= 0: 
+                        # action_values.append(Expected_Return([L1_cars, L2_cars], action, value))
+                        action_values.append(Expected_Return_with_Mem([L1_cars, L2_cars], action, value))
+                    else:
+                        # not available actions
+                        action_values.append(-np.inf)
                 new_action = ACTION_LIST[np.argmax(action_values)]
                 policy[L1_cars, L2_cars] = new_action
                 if policy_stable and old_action != new_action:
@@ -284,5 +340,4 @@ def figure_4_2():
 
 if __name__ == '__main__':
     figure_4_2()
-
-pdb.set_trace()
+    figure_4_2_val_iter()
