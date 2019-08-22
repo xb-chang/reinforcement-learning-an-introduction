@@ -67,6 +67,7 @@ def rent(customers, cars, LAMB):
     
     assert MAX_CARS >= out_num >= 0
     assert MAX_CARS >= remain_num >= 0
+    assert 0 <= out_prob <= 1
     return out_num, out_prob, remain_num
 
 
@@ -86,11 +87,13 @@ def return_car(customers, cars, LAMB, CAR_MAX):
         prob = poisson.pmf(customers, LAMB)
     elif customers + cars == CAR_MAX + 1:
         remain_num = CAR_MAX
+        assert (customers-1) >= 0
         prob = 1 - poisson.cdf((customers-1), LAMB) # prob sum of all cases
     else:
         raise ValueError('customers {} + cars {} : {}'.format(customers, cars, customers + cars))
     
     assert 0 <= remain_num <= CAR_MAX
+    assert 0 <= prob <= 1
     return prob, remain_num
 
 
