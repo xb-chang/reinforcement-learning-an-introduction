@@ -102,7 +102,7 @@ def figure_4_3_val_iter():
         # https://github.com/ShangtongZhang/reinforcement-learning-an-introduction/issues/83
         policy[state] = stakes[np.argmax(np.round(action_values[1:], 5)) + 1]
 
-    pdb.set_trace()
+    # pdb.set_trace()
 
     plt.subplot(2, 1, 1)
     for sweep, state_value in enumerate(sweeps_history):
