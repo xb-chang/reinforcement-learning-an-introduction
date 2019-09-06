@@ -10,7 +10,8 @@ import pdb
 
 DISCOUNT = 1.0
 
-# The Action values are estimated
+# Monte Carlo ES (Exploring Starts) for GPI
+# The Action values Q(s, a) are estimated. Optimal equals to State values
 # Exploring Starts method is used.
 
 # A comprehensive state is (current sum, dealer's showning card, whether a usable ace hold)
@@ -54,12 +55,13 @@ def sum_cards(card_list):
         # no ace at all
         return 0, np.asarray(card_list).sum()
 
-def bj_eposide_gen_ES(p_policy, d_policy):
+def bj_eposide_ES(p_policy, d_policy):
     '''
     black jack eposide generation with exploring start.
-    p_policy: player policy, 31 length
+    p_policy: player policy, a full policy here
     d_policy: dealer policy, 31 length
     '''
+
     # player init
     player_cards = [card_dealt(), card_dealt()]
     # dealer init
@@ -73,17 +75,18 @@ def bj_eposide_gen_ES(p_policy, d_policy):
     state_list = []
     state_list.append((p_sum, dealer_show, ace_heat))
 
+    # starting action is exploring
     action_list = []
-    action = p_policy[p_sum]
-    action_list.append(action)
+    # action = randint(0, 1)
+    # action_list.append(action)
     
     # reward belong to t+1
     reward_list = [] # R_{t+1}
 
-    
-        
     if p_sum == 21 and t == 0:
         # natural: player 21 at the very begining
+        action = 0
+        action_list.append(action)
         # dealer sum
         _, d_sum = sum_cards(dealer_cards)
         # cmp and reward
@@ -91,6 +94,17 @@ def bj_eposide_gen_ES(p_policy, d_policy):
     else:
         # normal game
         # player's turn first
+        # ES A0
+        if t == 0:
+            if p_sum < 12:
+                action = 1
+            if p_sum > 21:
+                raise ValueError('Impossoble at the beginning.')
+            else:
+                action = randint(0, 1)
+            action_list.append(action)
+        
+
         while action == 1:
             # hit, next time
             t += 1
@@ -102,7 +116,13 @@ def bj_eposide_gen_ES(p_policy, d_policy):
             ace_heat, p_sum = sum_cards(player_cards)
             state_list.append((p_sum, dealer_show, ace_heat))
 
-            action = p_policy[p_sum]
+            if p_sum < 12:
+                action = 1
+            elif p_sum > 21:
+                action = 0
+            else:
+                # p_sum, dealer_show, usable_ace
+                action = p_policy[p_sum-12][dealer_show-1][ace_heat]
             action_list.append(action)
         
         # action == 0, stick
@@ -141,51 +161,26 @@ def figure_5_2():
     # A comprehensive state is (current sum, dealer's showning card, whether a usable ace hold)
     # current sum < 12, always hit; activated states are [12-21]
     # dealer's showing card: ACE - 10
-    # useable ace or not in player (keep changing every time)
+    # useable ace or not in player (keep changing every time) (usable: 1; no: 0)
 
     # stick 0; hit: 1
-    player_policy = np.zeros()
+    # initially, always stick
+    player_policy = np.zeros((10, 10, 2))
     # dealer stick_thres = 17 (simple policy with a threshold)
     dealer_simple_policy = ([None] + [1] * 16 + [0] * 14) # None is occupier, bust to 31
 
-    # simple policy with a threshold
-    # This simple policy only cares the sum in hand.
-    # player stick_thres = 20
-    player_simple_policy = ([None] + [1] * 19 + [0] * 11) # None is occupier, bust to 31
-    # dealer stick_thres = 17
-    dealer_simple_policy = ([None] + [1] * 16 + [0] * 14) # None is occupier, bust to 31
-
-    # state vaiues
-    # usable ace state
-    U_ACE_V = np.zeros((10, 10), dtype=np.float)
-    U_ACE_C = np.zeros((10, 10), dtype=np.float)
-    # no usable ace state
-    N_ACE_V = np.zeros((10, 10), dtype=np.float)
-    N_ACE_C = np.zeros((10, 10), dtype=np.float)
-    # 200 states in total (no/usable ACE)
-    # V[0]: No Usable Ace
-    # V[1]: Usable Ace
-    V = [N_ACE_V, U_ACE_V]
-    # counting
-    C = [N_ACE_C, U_ACE_C]
+    # State-Action Values
+    Q_Vs = np.zeros((10, 10, 2, 2), dtype=np.float)
+    C = np.zeros((10, 10, 2, 2), dtype=np.float)
     
-    show_states = [None,
-              None,
-              None,
-              None]
-
-    titles = ['Usable Ace, 10000 Episodes',
-              'Usable Ace, 500000 Episodes',
-              'No Usable Ace, 10000 Episodes',
-              'No Usable Ace, 500000 Episodes']
-
     eposide_c = 0
     while True:
+        old_Q = Q_Vs.copy()
         # state: (p_sum, d_show, u_ace: 0-no; 1-yes), p_sum can < 12 or bust
         # action: stick-0; hit-1
         # reward: -1, 0, 1
         # random starting point
-        states, actions, rewards = bj_eposide_gen(player_simple_policy, dealer_simple_policy)
+        states, actions, rewards = bj_eposide_ES(player_policy, dealer_simple_policy)
         
         # state & action correspond to t
         # reward corresponds to t+1        
@@ -199,6 +194,7 @@ def figure_5_2():
         for t_step in reversed(range(t_len)):
             state = states[t_step]
             p_sum, dealer_show, ace_heat = state
+            action = actions[t_step]
             reward = rewards[t_step]
 
             # G_t = R_{t+1} + discount * G_{t+1}
@@ -206,49 +202,31 @@ def figure_5_2():
 
             # One advantage of MC method !!!!!!
             # update the meaningful states only
+            # In black jack, the states are always first visit
             if 12 <= p_sum <= 21:
                 if state in states[:t_step]:
                     # not first visit here
                     pass
-
                 else:
                     # first visit here
                     # update the very first state only 
                     assert ace_heat in [0, 1]
-                    avg_v = V[ace_heat][p_sum-12, dealer_show-1]
-                    count = C[ace_heat][p_sum-12, dealer_show-1]
+                    assert action in [0, 1]
+                    avg_v = Q_Vs[p_sum-12][dealer_show-1][ace_heat][int(action)]
+                    count = C[p_sum-12][dealer_show-1][ace_heat][int(action)]
 
-                    V[ace_heat][p_sum-12, dealer_show-1] = (avg_v * count + Return)/(count+1.0)
-                    C[ace_heat][p_sum-12, dealer_show-1] = count+1.0
+                    # policy estimation
+                    Q_Vs[p_sum-12][dealer_show-1][ace_heat][int(action)] = (avg_v * count + Return)/(count+1.0)
+                    C[p_sum-12][dealer_show-1][ace_heat][int(action)] = count+1.0
+                    # policy improvement
+                    player_policy[p_sum-12][dealer_show-1][ace_heat] = np.argmax(Q_Vs[p_sum-12][dealer_show-1][ace_heat])
+        max_value_change = abs(old_Q - Q_Vs).max()
+        eposide_c += 1        
+        print('{} max value change {}'.format(eposide_c, max_value_change))
+        # if max_value_change < 1e-4:
+        # # if max_value_change < 1e-2:
+        #     break
 
-        eposide_c += 1    
-
-        if eposide_c == 10000:
-            print('{} eposide Done.'.format(eposide_c))
-            show_states[0] = np.copy(V[1])
-            show_states[2] = np.copy(V[0])
-            # pdb.set_trace()
-        elif eposide_c == 500000:
-            print('{} eposide Done.'.format(eposide_c))
-            show_states[1] = np.copy(V[1])
-            show_states[3] = np.copy(V[0])
-            # pdb.set_trace()
-            break
-
-    # drawing
-    _, axes = plt.subplots(2, 2, figsize=(40, 30))
-    plt.subplots_adjust(wspace=0.1, hspace=0.2)
-    axes = axes.flatten()
-
-    for show_state, title, axis in zip(show_states, titles, axes):
-        fig = sns.heatmap(np.flipud(show_state), cmap="YlGnBu", ax=axis, xticklabels=range(1, 11),
-                          yticklabels=list(reversed(range(12, 22))))
-        fig.set_ylabel('player sum', fontsize=30)
-        fig.set_xlabel('dealer showing', fontsize=30)
-        fig.set_title(title, fontsize=30)
-
-    plt.savefig('./images/mine/figure_5_1.png')
-    plt.close()
 
 
 if __name__ == '__main__':
