@@ -55,6 +55,21 @@ def sum_cards(card_list):
         # no ace at all
         return 0, np.asarray(card_list).sum()
 
+def parse_two_cards(p_sum):
+    if p_sum == 21:
+        ace_heat = 1
+    else:
+        ace_heat = randint(0, 1)
+
+    if ace_heat == 1:
+        player_cards = [1, p_sum-11]
+    else:
+        card1 = randint(p_sum-10, 10)
+        card2 = p_sum - card1
+        player_cards = [card1, card2]
+    return player_cards, ace_heat
+
+
 def bj_eposide_ES(p_policy, d_policy):
     '''
     black jack eposide generation with exploring start.
@@ -63,13 +78,16 @@ def bj_eposide_ES(p_policy, d_policy):
     '''
 
     # player init
+    t = 0
+    # p_sum = randint(12, 21)
+    # player_cards, ace_heat = parse_two_cards(p_sum)    
     player_cards = [card_dealt(), card_dealt()]
+    ace_heat, p_sum = sum_cards(player_cards)
+
     # dealer init
     dealer_cards = [card_dealt(), card_dealt()]
-
-    t = 0
     dealer_show = dealer_cards[0]
-    ace_heat, p_sum = sum_cards(player_cards)
+    
 
     # state and action belong to t
     state_list = []
@@ -165,17 +183,20 @@ def figure_5_2():
 
     # stick 0; hit: 1
     # initially, always stick
-    player_policy = np.zeros((10, 10, 2))
+    # player_policy = np.zeros((10, 10, 2))
+    player_policy = np.random.randint(2, size=(10, 10, 2))
     # dealer stick_thres = 17 (simple policy with a threshold)
     dealer_simple_policy = ([None] + [1] * 16 + [0] * 14) # None is occupier, bust to 31
 
     # State-Action Values
-    Q_Vs = np.zeros((10, 10, 2, 2), dtype=np.float)
+    # Q_Vs = np.zeros((10, 10, 2, 2), dtype=np.float)
+    Q_Vs = np.random.rand(10, 10, 2, 2)
     C = np.zeros((10, 10, 2, 2), dtype=np.float)
     
     eposide_c = 0
     while True:
         old_Q = Q_Vs.copy()
+        old_p = player_policy.copy()
         # state: (p_sum, d_show, u_ace: 0-no; 1-yes), p_sum can < 12 or bust
         # action: stick-0; hit-1
         # reward: -1, 0, 1
@@ -222,11 +243,44 @@ def figure_5_2():
                     player_policy[p_sum-12][dealer_show-1][ace_heat] = np.argmax(Q_Vs[p_sum-12][dealer_show-1][ace_heat])
         max_value_change = abs(old_Q - Q_Vs).max()
         eposide_c += 1        
-        print('{} max value change {}'.format(eposide_c, max_value_change))
-        # if max_value_change < 1e-4:
+        print('{} max value change {:.6f}'.format(eposide_c, max_value_change))
+        # if max_value_change < 1e-4 and np.array_equal(old_p, player_policy):
         # # if max_value_change < 1e-2:
         #     break
+        # previous convergence conditions failed (not stable)
+        if eposide_c >= 2000000 and np.array_equal(old_p, player_policy):
+            # Bellman Optimality Equation V_{*}(s) = max_{a} Q_{*}(s, a)
+            state_values = np.amax(Q_Vs, axis=-1)
+            opt_policy = np.argmax(Q_Vs, axis=-1)
+            break
+    
+    action_no_usable_ace = opt_policy[:, :, 0]
+    action_usable_ace = opt_policy[:, :, 1]
+    state_value_no_usable_ace = state_values[:, :, 0]
+    state_value_usable_ace = state_values[:, :, 1]
+    images = [action_usable_ace,
+              state_value_usable_ace,
+              action_no_usable_ace,
+              state_value_no_usable_ace]
 
+    titles = ['Optimal policy with usable Ace',
+              'Optimal value with usable Ace',
+              'Optimal policy without usable Ace',
+              'Optimal value without usable Ace']
+
+    _, axes = plt.subplots(2, 2, figsize=(40, 30))
+    plt.subplots_adjust(wspace=0.1, hspace=0.2)
+    axes = axes.flatten()
+
+    for image, title, axis in zip(images, titles, axes):
+        fig = sns.heatmap(np.flipud(image), cmap="YlGnBu", ax=axis, xticklabels=range(1, 11),
+                          yticklabels=list(reversed(range(12, 22))))
+        fig.set_ylabel('player sum', fontsize=30)
+        fig.set_xlabel('dealer showing', fontsize=30)
+        fig.set_title(title, fontsize=30)
+
+    plt.savefig('./images/mine/figure_5_2.png')
+    plt.close()
 
 
 if __name__ == '__main__':
