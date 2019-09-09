@@ -20,8 +20,8 @@ DISCOUNT = 1.0
 # useable ace or not in player (keep changing every time)
 
 def card_dealt():
-    # ACE - 10
-    return randint(1, 10)
+    # ACE - 10, J, Q, K
+    return min(10, randint(1, 13))
 
 def cmp_r(p_sum, d_sum):
     # compare palyer sum and dealer sum
@@ -183,14 +183,17 @@ def figure_5_2():
 
     # stick 0; hit: 1
     # initially, always stick
-    # player_policy = np.zeros((10, 10, 2))
-    player_policy = np.random.randint(2, size=(10, 10, 2))
+    player_policy = np.zeros((10, 10, 2))
+    # # # initial policy with original policy: >= 20 sticks (0)
+    player_policy[:8][:][:] = 1
+    # pdb.set_trace()
+    # player_policy = np.random.randint(2, size=(10, 10, 2))
     # dealer stick_thres = 17 (simple policy with a threshold)
     dealer_simple_policy = ([None] + [1] * 16 + [0] * 14) # None is occupier, bust to 31
 
     # State-Action Values
-    # Q_Vs = np.zeros((10, 10, 2, 2), dtype=np.float)
-    Q_Vs = np.random.rand(10, 10, 2, 2)
+    Q_Vs = np.zeros((10, 10, 2, 2), dtype=np.float)
+    # Q_Vs = np.random.rand(10, 10, 2, 2)
     C = np.zeros((10, 10, 2, 2), dtype=np.float)
     
     eposide_c = 0
@@ -239,8 +242,10 @@ def figure_5_2():
                     # policy estimation
                     Q_Vs[p_sum-12][dealer_show-1][ace_heat][int(action)] = (avg_v * count + Return)/(count+1.0)
                     C[p_sum-12][dealer_show-1][ace_heat][int(action)] = count+1.0
-                    # policy improvement
-                    player_policy[p_sum-12][dealer_show-1][ace_heat] = np.argmax(Q_Vs[p_sum-12][dealer_show-1][ace_heat])
+                    # # policy improvement
+                    # player_policy[p_sum-12][dealer_show-1][ace_heat] = np.argmax(Q_Vs[p_sum-12][dealer_show-1][ace_heat])
+        # policy improvement
+        player_policy = np.argmax(Q_Vs, axis=-1)
         max_value_change = abs(old_Q - Q_Vs).max()
         eposide_c += 1        
         print('{} max value change {:.6f}'.format(eposide_c, max_value_change))
@@ -248,7 +253,7 @@ def figure_5_2():
         # # if max_value_change < 1e-2:
         #     break
         # previous convergence conditions failed (not stable)
-        if eposide_c >= 2000000 and np.array_equal(old_p, player_policy):
+        if eposide_c >= 1000000 and np.array_equal(old_p, player_policy):
             # Bellman Optimality Equation V_{*}(s) = max_{a} Q_{*}(s, a)
             state_values = np.amax(Q_Vs, axis=-1)
             opt_policy = np.argmax(Q_Vs, axis=-1)

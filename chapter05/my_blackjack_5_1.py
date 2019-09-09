@@ -16,8 +16,8 @@ DISCOUNT = 1.0
 # useable ace or not in player (keep changing every time)
 
 def card_dealt():
-    # ACE - 10
-    return randint(1, 10)
+    # ACE - 10, J, Q, K
+    return min(10, randint(1, 13))
 
 def cmp_r(p_sum, d_sum):
     # compare palyer sum and dealer sum

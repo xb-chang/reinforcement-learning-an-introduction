@@ -330,7 +330,7 @@ def figure_5_2():
         fig.set_xlabel('dealer showing', fontsize=30)
         fig.set_title(title, fontsize=30)
 
-    plt.savefig('../images/figure_5_2.png')
+    plt.savefig('./images/figure_5_2.png')
     plt.close()
 
 def figure_5_3():
@@ -359,7 +359,7 @@ def figure_5_3():
 
 
 if __name__ == '__main__':
-    figure_5_1()
+    # figure_5_1()
     figure_5_2()
-    figure_5_3()
+    # figure_5_3()
 
